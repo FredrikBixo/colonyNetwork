@@ -2602,15 +2602,14 @@ eth-block-tracker@^2.2.2:
     pify "^2.3.0"
     tape "^4.6.3"
 
-eth-gas-reporter@^0.1.1:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/eth-gas-reporter/-/eth-gas-reporter-0.1.2.tgz#504b4f655c0f9f45d6d429a384d16c3cd77b5de9"
+"eth-gas-reporter@http://github.com/area/eth-gas-reporter.git#manual-sync-requests":
+  version "0.1.1"
+  resolved "http://github.com/area/eth-gas-reporter.git#07535f4d4094a603a64c4783a1e97dd48dd7dcc4"
   dependencies:
     abi-decoder "^1.0.8"
     cli-table2 "^0.2.0"
     colors "^1.1.2"
     lodash "^4.17.4"
-    mocha "^3.5.3"
     req-cwd "^2.0.0"
     request "^2.83.0"
     request-promise-native "^1.0.5"
@@ -5035,7 +5034,7 @@ mocha@^2.4.5:
     supports-color "1.2.0"
     to-iso-string "0.0.2"
 
-mocha@^3.0.0, mocha@^3.4.2, mocha@^3.5.3:
+mocha@^3.0.0, mocha@^3.4.2:
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/mocha/-/mocha-3.5.3.tgz#1e0480fe36d2da5858d1eb6acc38418b26eaa20d"
   dependencies:
