@@ -128,7 +128,10 @@ export function getTokenArgs() {
 }
 
 export function hexToUtf8(text) {
-  return web3.toAscii(text).replace(/\u0000/g, "");
+  // This fixes a bug in web3. Hopefully fixed in web3 1.0, at which point it can be removed
+  // https://github.com/ethereum/web3.js/issues/337
+  // Upgrading eslint from v4.18.2 to v4.19.1 seems to have caused it to throw a wobbly with this line.
+  return web3.toAscii(text).replace(/\u0000/g, ""); // eslint-disable-line no-control-regex
 }
 
 export async function currentBlockTime() {
