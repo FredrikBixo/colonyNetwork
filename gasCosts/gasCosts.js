@@ -163,7 +163,7 @@ contract("All", () => {
       await giveUserCLNYTokensAndStake(colonyNetwork, STAKER2, big);
       await giveUserCLNYTokensAndStake(colonyNetwork, STAKER3, big);
 
-      // Start Reputation
+      // Start Reputation mining cycle
       await colonyNetwork.startNextCycle();
       let repCycleAddr = await colonyNetwork.getReputationMiningCycle.call();
 
@@ -191,8 +191,8 @@ contract("All", () => {
       await goodClient.submitRootHash();
       await badClient.submitRootHash();
       await badClient2.submitRootHash();
-      // Session of respond / invalidate between our 3 submissions
 
+      // Session of respond / invalidate between our 3 submissions
       await goodClient.submitJustificationRootHash();
       await badClient.submitJustificationRootHash();
       await badClient2.submitJustificationRootHash();
