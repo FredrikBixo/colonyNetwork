@@ -125,8 +125,10 @@ class ReputationMiningClient {
     this.justificationTree = new ethers.Contract(ethers.utils.getContractAddress(tx), PatriciaTreeJSON.abi, this.ganacheWallet);
 
     this.justificationHashes = {};
+    const addr = await this.colonyNetwork.getReputationMiningCycle.call();
+    const repCycle = new ethers.Contract(addr, ReputationMiningCycleJSON.abi, this.realWallet);
 
-    let nLogEntries = await this.colonyNetwork.getReputationUpdateLogLength(false);
+    let nLogEntries = await repCycle.getReputationUpdateLogLength();
     nLogEntries = new BN(nLogEntries.toString());
     let interimHash;
     let jhLeafValue;
@@ -135,7 +137,7 @@ class ReputationMiningClient {
       // console.log(interimHash);
       jhLeafValue = this.getJRHEntryValueAsBytes(interimHash, this.nReputations);
       // console.log(jhLeafValue);
-      const logEntry = await this.colonyNetwork.getReputationUpdateLogEntry(i.toString(), false); // eslint-disable-line no-await-in-loop
+      const logEntry = await repCycle.getReputationUpdateLogEntry(i.toString()); // eslint-disable-line no-await-in-loop
       const score = this.getScore(i, logEntry);
       let newestReputationKey = 0x0;
       let newestReputationValue = 0x0;
@@ -147,7 +149,7 @@ class ReputationMiningClient {
         interimHash = await this.colonyNetwork.getReputationRootHash(); // eslint-disable-line no-await-in-loop
         jhLeafValue = this.getJRHEntryValueAsBytes(interimHash, this.nReputations);
       } else {
-        const prevLogEntry = await this.colonyNetwork.getReputationUpdateLogEntry(i.subn(1).toString(), false); // eslint-disable-line no-await-in-loop
+        const prevLogEntry = await repCycle.getReputationUpdateLogEntry(i.subn(1).toString()); // eslint-disable-line no-await-in-loop
         const prevColonyAddress = prevLogEntry[3].slice(2);
         const prevSkillId = prevLogEntry[2];
         const prevUserAddress = prevLogEntry[0].slice(2);
@@ -219,7 +221,7 @@ class ReputationMiningClient {
 
     await this.justificationTree.insert(`0x${nLogEntries.toString(16, 64)}`, jhLeafValue, { gasLimit: 4000000 });
     if (nLogEntries.gtn(0)) {
-      const prevLogEntry = await this.colonyNetwork.getReputationUpdateLogEntry(nLogEntries.subn(1).toString(), false);
+      const prevLogEntry = await repCycle.getReputationUpdateLogEntry(nLogEntries.subn(1).toString());
       const prevColonyAddress = prevLogEntry[3].slice(2);
       const prevSkillId = prevLogEntry[2];
       const prevUserAddress = prevLogEntry[0].slice(2);
@@ -333,11 +335,12 @@ class ReputationMiningClient {
   async submitJustificationRootHash() {
     const jrh = await this.justificationTree.getRootHash();
     const [branchMask1, siblings1] = await this.justificationTree.getProof(`0x${new BN("0").toString(16, 64)}`);
-    const nLogEntries = await this.colonyNetwork.getReputationUpdateLogLength(false);
-    const [branchMask2, siblings2] = await this.justificationTree.getProof(`0x${new BN(nLogEntries.toString()).toString(16, 64)}`);
+
     const addr = await this.colonyNetwork.getReputationMiningCycle.call();
     const repCycle = new ethers.Contract(addr, ReputationMiningCycleJSON.abi, this.realWallet);
+    const nLogEntries = await repCycle.getReputationUpdateLogLength();
 
+    const [branchMask2, siblings2] = await this.justificationTree.getProof(`0x${new BN(nLogEntries.toString()).toString(16, 64)}`);
     const [round, index] = await this.getMySubmissionRoundAndIndex();
     await repCycle.submitJustificationRootHash(round.toString(), index.toString(), jrh, branchMask1, siblings1, branchMask2, siblings2, {
       gasLimit: 6000000
@@ -415,7 +418,7 @@ class ReputationMiningClient {
     const firstDisagreeIdx = new BN(submission[8].toString());
     const lastAgreeIdx = firstDisagreeIdx.subn(1);
     // console.log('getReputationUPdateLogEntry', lastAgreeIdx);
-    const logEntry = await this.colonyNetwork.getReputationUpdateLogEntry(lastAgreeIdx.toString(), false);
+    const logEntry = await repCycle.getReputationUpdateLogEntry(lastAgreeIdx.toString());
     // console.log('getReputationUPdateLogEntry done');
     const colonyAddress = logEntry[3];
     const skillId = logEntry[2];

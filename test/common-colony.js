@@ -37,6 +37,7 @@ contract("Common Colony", () => {
     await etherRouter.setResolver(resolverColonyNetworkDeployed.address);
     colonyNetwork = await IColonyNetwork.at(etherRouter.address);
     await upgradableContracts.setupColonyVersionResolver(colonyTemplate, colonyTask, colonyFunding, resolver, colonyNetwork);
+    await colonyNetwork.startNextCycle();
 
     commonColonyToken = await Token.new("Colony Network Token", "CLNY", 18);
     await colonyNetwork.createColony("Common Colony", commonColonyToken.address);

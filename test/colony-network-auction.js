@@ -31,6 +31,7 @@ contract("ColonyNetworkAuction", accounts => {
 
     const commonColonyAddress = await colonyNetwork.getColony("Common Colony");
     commonColony = IColony.at(commonColonyAddress);
+    await colonyNetwork.startNextCycle();
   });
 
   beforeEach(async () => {

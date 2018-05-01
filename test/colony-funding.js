@@ -28,6 +28,7 @@ contract("Colony Funding", () => {
   before(async () => {
     const etherRouter = await EtherRouter.deployed();
     colonyNetwork = await IColonyNetwork.at(etherRouter.address);
+    await colonyNetwork.startNextCycle();
   });
 
   beforeEach(async () => {
